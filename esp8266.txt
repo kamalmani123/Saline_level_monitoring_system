@@ -1,0 +1,62 @@
+
+#define BLYNK_PRINT Serial    
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+#define BLYNK_TEMPLATE_ID "TMPLjNw_Ftbg"
+#define BLYNK_TEMPLATE_NAME "Saline Level"
+#define BLYNK_AUTH_TOKEN "zZ9JnGXWbT4lJ-XR7JgKT6TCX0Cnec87"
+
+char auth[] = BLYNK_AUTH_TOKEN;
+char ssid[] = "IOT";
+char pass[] = "123456789";
+#include <Wire.h> 
+#include <LCD_I2C.h>
+LCD_I2C lcd(0x3F);
+
+unsigned int val=0,a[15],val1,val2;
+unsigned int m=0;
+int p;
+
+void setup() 
+{
+   Serial.begin(9600);
+  Wire.begin(); // gpio 2 and gpio 0 which are D4, and D3
+ 
+  lcd.begin();                 //Init the LCD
+  lcd.backlight();            //Activate backlight     
+  lcd.home();  
+  lcd.setCursor(0,0);lcd.print("Saline level monitoring");
+  delay(1000);
+  lcd.clear();
+   Blynk.begin(auth, ssid, pass, "blynk.cloud", 80);
+}
+
+void loop() 
+{
+while(Serial.available())
+    {
+        char data;
+        data = Serial.read();
+  
+        a[m] = data;
+          if(a[0] == '*')
+          {
+            if(m <= 6)
+            {m++;}
+          }
+      }
+      if(m > 1)
+      {   
+        val  = (a[1]-0x30)*100+(a[2]-0x30)*10+(a[3]-0x30);  
+        val1  = (a[4]-0x30)*100+(a[5]-0x30)*10+(a[6]-0x30);  
+        m=0;
+      }
+
+
+    Blynk.virtualWrite(V0,val);
+  
+    Blynk.virtualWrite(V2,val1);
+     Blynk.run();
+      delay(100);
+
+}

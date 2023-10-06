@@ -1,0 +1,102 @@
+#include <LCD_I2C.h>
+LCD_I2C lcd(0x3F); // Default address of most PCF8574 modules, change according
+
+
+
+#include "HX711.h"
+const int dout = 2;
+const int sck = 3;
+HX711 scale;
+
+
+int buzzer = 13;
+
+float p = 0;
+int kg=0;
+int salinelevel;
+void setup() 
+{
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  lcd.begin(); // If you are using more I2C devices using the Wire library use lcd.begin(false)
+                 // this stop the library(LCD_I2C) from calling Wire.begin()
+  lcd.backlight();
+  lcd.setCursor(0,0);
+  lcd.print("SALINE LEVEL");
+  lcd.setCursor(0,1);
+  lcd.print("MONITORING");
+  delay(3000);
+  lcd.clear();
+  Serial.println("hai");
+  scale.begin(dout, sck);
+
+  pinMode(buzzer,OUTPUT);
+  digitalWrite(buzzer,LOW);
+  
+  scale.read();
+  scale.read_average(20);
+  scale.get_value(5);
+  (scale.get_units(5), 1);
+  scale.set_scale(2280.f);
+  scale.tare();
+  scale.read();
+  scale.read_average(20); 
+  scale.get_value(5);
+  (scale.get_units(5), 1);
+  lcd.begin(); // If you are using more I2C devices using the Wire library use lcd.begin(false)
+                 // this stop the library(LCD_I2C) from calling Wire.begin()
+    lcd.backlight();
+   
+}
+
+void loop() 
+{ 
+  //calculating.....................................................................................................
+
+  
+  (scale.get_units(), 1);
+    p = scale.get_units(10);
+    (p, 1);
+
+
+
+
+    
+//    kg= map(kg,0,2000,0,10);
+    kg=p;
+   kg=kg*10;
+    scale.power_down();              // put the ADC in sleep mode
+    delay(1000);
+    scale.power_up();
+    
+    if(kg<0){kg=0;}
+
+
+   lcd.setCursor(0,0);
+   lcd.print("L :");
+   if(kg<=9){lcd.print("00"); lcd.print(kg);}
+   else if(kg<=99){lcd.print("0"); lcd.print(kg);}
+   else if(kg<=999){lcd.print(""); lcd.print(kg);}
+
+if(kg<=150 && kg>=10){digitalWrite(buzzer,HIGH); delay(2000); digitalWrite(buzzer,LOW);
+salinelevel=0;}
+else {salinelevel=1;}
+
+
+
+
+
+    senddata();
+}
+void senddata()
+  {
+    Serial.print('*');
+
+    if(kg<=9){Serial.print("00"); Serial.print(kg);}
+   else if(kg<=99){Serial.print("0"); Serial.print(kg);}
+   else if(kg<=999){Serial.print(""); Serial.print(kg);}
+
+       if(salinelevel<=9){Serial.print("00"); Serial.print(salinelevel);}
+   else if(salinelevel<=99){Serial.print("0"); Serial.print(salinelevel);}
+   else if(salinelevel<=999){Serial.print(""); Serial.print(salinelevel);}
+  }

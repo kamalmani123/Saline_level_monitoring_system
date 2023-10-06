@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.prop.salinelevelmonitoring"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="18"
+        android:targetSdkVersion="25" android:maxSdkVersion="30"/>
+    
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+     <uses-permission android:name="android.permission.SEND_SMS" />
+     <uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"/>
+     <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/> 
+    
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/logo"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <service android:name=".MyService" />
+        <service android:name=".BackgroundService" />
+        <activity
+            android:name="com.prop.salinelevelmonitoring.HomePage"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <activity android:name="com.prop.salinelevelmonitoring.MainActivity" >
+        </activity>
+        
+        <activity android:name="com.prop.salinelevelmonitoring.ViewPatientsList" >
+        </activity>
+        
+        <activity android:name="com.prop.salinelevelmonitoring.AsyncronoustaskAndroidExample" >
+        </activity>
+        
+          <activity android:name="com.prop.salinelevelmonitoring.SalineLevel" >
+        </activity>
+        
+           <activity android:name="com.prop.salinelevelmonitoring.loginpage" >
+        </activity>
+   
+        
+    </application>
+
+</manifest>
